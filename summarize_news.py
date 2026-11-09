@@ -151,6 +151,14 @@ def summarize_article(article_text):
         max_tokens=2000
     )
 
+    print("SARVAM RAW RESPONSE:", response)
+
+    choice = response.choices[0]
+
+    print("FINISH REASON:", choice.finish_reason)
+    print("MESSAGE CONTENT:", repr(choice.message.content))
+    print("MESSAGE:", choice.message)
+
     choice = response.choices[0]
 
     summary = choice.message.content
