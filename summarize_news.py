@@ -130,57 +130,42 @@ print("\nArticles selected:", len(selected_articles))
 # 5. GENERATE SUMMARIES USING SARVAM AI
 # --------------------------------------------------
 
-def summarize_article(article):
+def summarize_article(article_text):
 
     prompt = f"""
-    You are an expert news analyst.
+    Summarise the following article.
 
-    Analyze the following article and prepare a useful
-    and concise news summary.
+    Provide:
+    1. Summary: One concise paragraph.
+    2. Key Takeaways: 3 to 5 bullet points.
+    3. Why It Matters: Explain its significance.
 
-    TITLE:
-    {article['title']}
-
-    ARTICLE:
-    {article['article_text']}
-
-    Follow this exact structure:
-
-    Summary:
-    Write one concise paragraph explaining the complete
-    story, its main argument and important developments.
-
-    Key Takeaways:
-    Provide 3 to 5 important facts, findings or developments.
-
-    Why It Matters:
-    Explain why this story is relevant to readers.
-
-    IMPORTANT INSTRUCTIONS:
-
-    1. Use only information present in the article.
-    2. Do not invent facts or introduce outside information.
-    3. Preserve important numbers, names and dates.
-    4. Distinguish facts from opinions and projections.
-    5. Avoid repeating the same information.
-    6. Write in clear, simple English.
-    7. Make the summary understandable without reading
-       the original article.
+    Article:
+    {article_text}
     """
 
     response = client.chat.completions(
         model=MODEL,
-        messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
+        messages=[{"role": "user", "content": prompt}],
         reasoning_effort=None,
-        max_tokens=1200
+        max_tokens=2000
     )
 
-    return response.choices[0].message.content
+    choice = response.choices[0]
+
+    summary = choice.message.content
+
+    print("Sarvam finish reason:", choice.finish_reason)
+    print("Sarvam response:", repr(summary))
+    print("Summary length:", len(summary or ""))
+
+    if not summary or not summary.strip():
+        raise ValueError(
+            f"Sarvam returned an empty summary. "
+            f"Finish reason: {choice.finish_reason}"
+        )
+
+    return summary
 
 
 # Process each article
