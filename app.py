@@ -63,6 +63,22 @@ if st.button("Fetch and summarise latest news", type="primary"):
 # Display articles
 articles = st.session_state.get("articles", [])
 
+# Temporary debugging information
+with st.expander("Debug information"):
+    st.write("Number of articles:", len(articles))
+
+    if articles:
+        st.write("Available JSON fields:")
+        st.write(list(articles[0].keys()))
+
+        st.write("First article summary:")
+        st.write(repr(articles[0].get("ai_summary")))
+
+        st.write(
+            "Summary length:",
+            len(str(articles[0].get("ai_summary", "")))
+        )
+
 if articles:
 
     st.subheader(f"Latest {len(articles)} Articles")
